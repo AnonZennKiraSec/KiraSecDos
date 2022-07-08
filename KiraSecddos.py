@@ -11,9 +11,9 @@
 from colorama import Fore, Back, Style
 from queue import Queue
 from optparse import OptionParser
-import time,sys,socket,threading,logging,urllib.request,random
+import time,sys,socket,threading,logging,urllib.request,random, csv
 
-
+#FIXME: deprecated, use user-agent.txt to extend your list
 def user_agent():
 	global uagent
 	uagent=[]
@@ -271,7 +271,17 @@ def user_agent():
 	
 	return(uagent)
 
+def load_agents():
+	import_file = open("user-agents.txt", "r")
+	global uagent
+	uagent=[]
+	for r in import_file:
+		uagent.append(r)
 
+	return(uagent)
+
+
+#FIXME: deprecated, use zombies.txt file to extend your list
 def my_bots():
 	global bots
 	bots=[]
@@ -865,6 +875,14 @@ def my_bots():
 
 	return(bots)
 
+def load_bots():
+	import_file = open("zombies.txt","r")
+	global bots
+	bots = []
+	for r in import_file:
+		bots.append(r)
+
+	return (bots)
 
 def bot_hammering(url):
 	try:
@@ -989,8 +1007,10 @@ if __name__ == '__main__':
 	get_parameters()
 	print("\033[92m",host," port: ",str(port)," boost: ",str(thr),"\033[0m")
 	print("\033[94mPlease wait...\033[0m")
-	user_agent()
-	my_bots()
+	# user_agent()
+	load_agents()
+	#my_bots()
+	load_bots()
 	time.sleep(5)
 	try:
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -1000,7 +1020,7 @@ if __name__ == '__main__':
 		print("\033[91mcheck server ip and port\033[0m")
 		usage()
 
-
+	load_bots()
 
 	while True:
 		for i in range(int(thr)):
