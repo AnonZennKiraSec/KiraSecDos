@@ -1024,14 +1024,13 @@ if __name__ == '__main__':
 
 	while True:
 		for i in range(int(thr)):
-			while tth >= 0:
+			while tth > 0:
 				t = threading.Thread(target=dos)
-				# tth.daemon = True  # if thread is exist, it dies
+				t.daemon = True  # if thread is exist, it dies
 				t.start()
 				t2 = threading.Thread(target=dos2)
-				# t2.daemon = True  # if thread is exist, it dies
+				t2.daemon = True  # if thread is exist, it dies
 				t2.start()
-				print(tth)
 				tth -= 1
 
 		start = time.time()
